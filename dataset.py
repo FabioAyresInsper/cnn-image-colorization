@@ -1,12 +1,22 @@
+# pylint: disable=missing-docstring, import-error
 import os
-from torch.utils.data import Dataset
-from torchvision.io import read_image, ImageReadMode
-from torch import from_numpy
+
 from skimage.color import rgb2lab
+from torch import from_numpy
+from torch.utils.data import Dataset
+from torchvision.io import ImageReadMode, read_image
 
 
 class ImageDataset(Dataset):
-    def __init__(self, color_dir, gray_dir = None, transform = None, target_transform = None):
+
+    def __init__(
+        self,
+        color_dir,
+        gray_dir=None,
+        transform=None,
+        target_transform=None,
+        debug=True,
+    ):
         """
         :param color_dir: The directory where the colored images are located at.
         :param gray_dir: (Optional) The directory where the gray image are located at.
@@ -14,7 +24,11 @@ class ImageDataset(Dataset):
         :param transform: (Optional) `transform` function to be applied on a gray image.
         :param target_transform: (Optional) `transform` function to be applied on a colored image.
         """
-        self.names = os.listdir(color_dir)[:4]
+        file_list = list(os.listdir(color_dir))
+        if debug:
+            file_list = file_list[:4]
+        self.names = file_list
+
         self.color_dir = color_dir
         self.gray_dir = gray_dir
         self.transform = transform
@@ -41,7 +55,8 @@ class ImageDataset(Dataset):
             color_image = read_image(color_path)
         else:
             color_path = os.path.join(self.color_dir, self.names[index])
-            image = from_numpy(rgb2lab(read_image(color_path).permute(1, 2, 0))).permute(2, 0, 1)
+            image = from_numpy(rgb2lab(
+                read_image(color_path).permute(1, 2, 0))).permute(2, 0, 1)
 
             # The color image consists of the 'a' and 'b' parts of the LAB format.
             color_image = image[1:, :, :]

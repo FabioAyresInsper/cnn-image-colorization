@@ -1,5 +1,7 @@
+# pylint: disable=missing-docstring
 import matplotlib.pyplot as plt
-from CNN.Network import Network1, Network2, Network3, Network4, Network5, Network6
+
+from network import Network1, Network2, Network3, Network4, Network5, Network6
 
 
 def plot_loss(loss, title, filename):
@@ -27,8 +29,8 @@ def plot_losses(losses, labels, title, filename):
     plt.title(title)
     plt.xlabel("Epoch")
     plt.ylabel("Loss")
-    for i in range(len(losses)):
-        plt.plot(losses[i], label=labels[i])
+    for loss, label in zip(losses, labels):
+        plt.plot(loss, label=label)
     plt.legend()
     plt.savefig(f"figures/{filename}.png")
 
@@ -69,24 +71,19 @@ def register_hooks(model, architecture, hook):
         model.t_conv1.register_forward_hook(hook("t_conv1"))
         model.t_conv2.register_forward_hook(hook("t_conv2"))
 
-        layers = [
-            {
-                "name": "conv1",
-                "channels": model.conv1.out_channels
-            },
-            {
-                "name": "conv2",
-                "channels": model.conv2.out_channels
-            },
-            {
-                "name": "t_conv1",
-                "channels": model.t_conv1.out_channels
-            },
-            {
-                "name": "t_conv2",
-                "channels": model.t_conv2.out_channels
-            }
-        ]
+        layers = [{
+            "name": "conv1",
+            "channels": model.conv1.out_channels
+        }, {
+            "name": "conv2",
+            "channels": model.conv2.out_channels
+        }, {
+            "name": "t_conv1",
+            "channels": model.t_conv1.out_channels
+        }, {
+            "name": "t_conv2",
+            "channels": model.t_conv2.out_channels
+        }]
     elif architecture == 2:
         model.conv1.register_forward_hook(hook("conv1"))
         model.conv2.register_forward_hook(hook("conv2"))
@@ -95,32 +92,25 @@ def register_hooks(model, architecture, hook):
         model.t_conv2.register_forward_hook(hook("t_conv2"))
         model.t_conv3.register_forward_hook(hook("t_conv3"))
 
-        layers = [
-            {
-                "name": "conv1",
-                "channels": model.conv1.out_channels
-            },
-            {
-                "name": "conv2",
-                "channels": model.conv2.out_channels
-            },
-            {
-                "name": "conv3",
-                "channels": model.conv3.out_channels
-            },
-            {
-                "name": "t_conv1",
-                "channels": model.t_conv1.out_channels
-            },
-            {
-                "name": "t_conv2",
-                "channels": model.t_conv2.out_channels
-            },
-            {
-                "name": "t_conv3",
-                "channels": model.t_conv3.out_channels
-            }
-        ]
+        layers = [{
+            "name": "conv1",
+            "channels": model.conv1.out_channels
+        }, {
+            "name": "conv2",
+            "channels": model.conv2.out_channels
+        }, {
+            "name": "conv3",
+            "channels": model.conv3.out_channels
+        }, {
+            "name": "t_conv1",
+            "channels": model.t_conv1.out_channels
+        }, {
+            "name": "t_conv2",
+            "channels": model.t_conv2.out_channels
+        }, {
+            "name": "t_conv3",
+            "channels": model.t_conv3.out_channels
+        }]
     elif architecture == 3:
         model.conv1.register_forward_hook(hook("conv1"))
         model.conv2.register_forward_hook(hook("conv2"))
@@ -130,36 +120,28 @@ def register_hooks(model, architecture, hook):
         model.t_conv3.register_forward_hook(hook("t_conv3"))
         model.output.register_forward_hook(hook("output"))
 
-        layers = [
-            {
-                "name": "conv1",
-                "channels": model.conv1.out_channels
-            },
-            {
-                "name": "conv2",
-                "channels": model.conv2.out_channels
-            },
-            {
-                "name": "conv3",
-                "channels": model.conv3.out_channels
-            },
-            {
-                "name": "t_conv1",
-                "channels": model.t_conv1.out_channels
-            },
-            {
-                "name": "t_conv2",
-                "channels": model.t_conv2.out_channels
-            },
-            {
-                "name": "t_conv3",
-                "channels": model.t_conv3.out_channels
-            },
-            {
-                "name": "output",
-                "channels": model.output.out_channels
-            }
-        ]
+        layers = [{
+            "name": "conv1",
+            "channels": model.conv1.out_channels
+        }, {
+            "name": "conv2",
+            "channels": model.conv2.out_channels
+        }, {
+            "name": "conv3",
+            "channels": model.conv3.out_channels
+        }, {
+            "name": "t_conv1",
+            "channels": model.t_conv1.out_channels
+        }, {
+            "name": "t_conv2",
+            "channels": model.t_conv2.out_channels
+        }, {
+            "name": "t_conv3",
+            "channels": model.t_conv3.out_channels
+        }, {
+            "name": "output",
+            "channels": model.output.out_channels
+        }]
     elif architecture == 4:
         model.conv1.register_forward_hook(hook("conv1"))
         model.conv2.register_forward_hook(hook("conv2"))
@@ -171,44 +153,34 @@ def register_hooks(model, architecture, hook):
         model.t_conv4.register_forward_hook(hook("t_conv4"))
         model.output.register_forward_hook(hook("output"))
 
-        layers = [
-            {
-                "name": "conv1",
-                "channels": model.conv1.out_channels
-            },
-            {
-                "name": "conv2",
-                "channels": model.conv2.out_channels
-            },
-            {
-                "name": "conv3",
-                "channels": model.conv3.out_channels
-            },
-            {
-                "name": "conv4",
-                "channels": model.conv4.out_channels
-            },
-            {
-                "name": "t_conv1",
-                "channels": model.t_conv1.out_channels
-            },
-            {
-                "name": "t_conv2",
-                "channels": model.t_conv2.out_channels
-            },
-            {
-                "name": "t_conv3",
-                "channels": model.t_conv3.out_channels
-            },
-            {
-                "name": "t_conv4",
-                "channels": model.t_conv4.out_channels
-            },
-            {
-                "name": "output",
-                "channels": model.output.out_channels
-            }
-        ]
+        layers = [{
+            "name": "conv1",
+            "channels": model.conv1.out_channels
+        }, {
+            "name": "conv2",
+            "channels": model.conv2.out_channels
+        }, {
+            "name": "conv3",
+            "channels": model.conv3.out_channels
+        }, {
+            "name": "conv4",
+            "channels": model.conv4.out_channels
+        }, {
+            "name": "t_conv1",
+            "channels": model.t_conv1.out_channels
+        }, {
+            "name": "t_conv2",
+            "channels": model.t_conv2.out_channels
+        }, {
+            "name": "t_conv3",
+            "channels": model.t_conv3.out_channels
+        }, {
+            "name": "t_conv4",
+            "channels": model.t_conv4.out_channels
+        }, {
+            "name": "output",
+            "channels": model.output.out_channels
+        }]
     elif architecture == 5:
         model.conv1.register_forward_hook(hook("conv1"))
         model.conv2.register_forward_hook(hook("conv2"))
@@ -221,48 +193,37 @@ def register_hooks(model, architecture, hook):
         model.t_conv4.register_forward_hook(hook("t_conv4"))
         model.output.register_forward_hook(hook("output"))
 
-        layers = [
-            {
-                "name": "conv1",
-                "channels": model.conv1.out_channels
-            },
-            {
-                "name": "conv2",
-                "channels": model.conv2.out_channels
-            },
-            {
-                "name": "conv3",
-                "channels": model.conv3.out_channels
-            },
-            {
-                "name": "conv4",
-                "channels": model.conv4.out_channels
-            },
-            {
-                "name": "conv5",
-                "channels": model.conv5.out_channels
-            },
-            {
-                "name": "t_conv1",
-                "channels": model.t_conv1.out_channels
-            },
-            {
-                "name": "t_conv2",
-                "channels": model.t_conv2.out_channels
-            },
-            {
-                "name": "t_conv3",
-                "channels": model.t_conv3.out_channels
-            },
-            {
-                "name": "t_conv4",
-                "channels": model.t_conv4.out_channels
-            },
-            {
-                "name": "output",
-                "channels": model.output.out_channels
-            }
-        ]
+        layers = [{
+            "name": "conv1",
+            "channels": model.conv1.out_channels
+        }, {
+            "name": "conv2",
+            "channels": model.conv2.out_channels
+        }, {
+            "name": "conv3",
+            "channels": model.conv3.out_channels
+        }, {
+            "name": "conv4",
+            "channels": model.conv4.out_channels
+        }, {
+            "name": "conv5",
+            "channels": model.conv5.out_channels
+        }, {
+            "name": "t_conv1",
+            "channels": model.t_conv1.out_channels
+        }, {
+            "name": "t_conv2",
+            "channels": model.t_conv2.out_channels
+        }, {
+            "name": "t_conv3",
+            "channels": model.t_conv3.out_channels
+        }, {
+            "name": "t_conv4",
+            "channels": model.t_conv4.out_channels
+        }, {
+            "name": "output",
+            "channels": model.output.out_channels
+        }]
     elif architecture == 6:
         model.conv1.register_forward_hook(hook("conv1"))
         model.conv2.register_forward_hook(hook("conv2"))
@@ -276,51 +237,39 @@ def register_hooks(model, architecture, hook):
         model.t_conv4.register_forward_hook(hook("t_conv4"))
         model.output.register_forward_hook(hook("output"))
 
-        layers = [
-            {
-                "name": "conv1",
-                "channels": model.conv1.out_channels
-            },
-            {
-                "name": "conv2",
-                "channels": model.conv2.out_channels
-            },
-            {
-                "name": "conv3",
-                "channels": model.conv3.out_channels
-            },
-            {
-                "name": "conv4",
-                "channels": model.conv4.out_channels
-            },
-            {
-                "name": "conv5",
-                "channels": model.conv5.out_channels
-            },
-            {
-                "name": "conv6",
-                "channels": model.conv6.out_channels
-            },
-            {
-                "name": "t_conv1",
-                "channels": model.t_conv1.out_channels
-            },
-            {
-                "name": "t_conv2",
-                "channels": model.t_conv2.out_channels
-            },
-            {
-                "name": "t_conv3",
-                "channels": model.t_conv3.out_channels
-            },
-            {
-                "name": "t_conv4",
-                "channels": model.t_conv4.out_channels
-            },
-            {
-                "name": "output",
-                "channels": model.output.out_channels
-            }
-        ]
+        layers = [{
+            "name": "conv1",
+            "channels": model.conv1.out_channels
+        }, {
+            "name": "conv2",
+            "channels": model.conv2.out_channels
+        }, {
+            "name": "conv3",
+            "channels": model.conv3.out_channels
+        }, {
+            "name": "conv4",
+            "channels": model.conv4.out_channels
+        }, {
+            "name": "conv5",
+            "channels": model.conv5.out_channels
+        }, {
+            "name": "conv6",
+            "channels": model.conv6.out_channels
+        }, {
+            "name": "t_conv1",
+            "channels": model.t_conv1.out_channels
+        }, {
+            "name": "t_conv2",
+            "channels": model.t_conv2.out_channels
+        }, {
+            "name": "t_conv3",
+            "channels": model.t_conv3.out_channels
+        }, {
+            "name": "t_conv4",
+            "channels": model.t_conv4.out_channels
+        }, {
+            "name": "output",
+            "channels": model.output.out_channels
+        }]
 
     return model, layers

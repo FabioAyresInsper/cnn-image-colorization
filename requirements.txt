@@ -1,0 +1,16 @@
+torch
+torchvision
+scikit-image
+numpy
+scipy
+pandas
+matplotlib
+tqdm
+scikit-learn
+yapf
+isort
+pylint
+ipython
+jupyter
+jupyterlab
+ipykernel

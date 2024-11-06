@@ -1,14 +1,26 @@
-from torch.utils.data import DataLoader
-from CNN.Dataset import ImageDataset
-import torch.optim as optim
-import torch.nn as nn
-from torch import save, load
-from utilities import instantiate_network
+# pylint: disable=missing-docstring, import-error
 import json
 import time
 
+import torch
+import torch.nn as nn
+import torch.optim as optim
+from torch import load, save
+from torch.utils.data import DataLoader
 
-def train_model(color_dir, gray_dir=None, epochs=50, learning_rate=0.001, architecture=1, file_name="cnn", model=None):
+from dataset import ImageDataset
+from utilities import instantiate_network
+
+
+def train_model(
+    color_dir,
+    gray_dir=None,
+    epochs=50,
+    learning_rate=0.001,
+    architecture=1,
+    file_name="cnn",
+    model=None,
+):
     """
     Trains the model with the given examples.
     :param color_dir: The directory where the colored images are stored.
@@ -20,11 +32,13 @@ def train_model(color_dir, gray_dir=None, epochs=50, learning_rate=0.001, archit
     results.
     :param model: (Optional) The pre-trained model.
     """
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+
     # Loading Dataset and creating the corresponding DataLoader.
     training_data = ImageDataset(color_dir=color_dir, gray_dir=gray_dir)
     train_data_loader = DataLoader(training_data, batch_size=32, shuffle=True)
 
-    cnn = instantiate_network(architecture)
+    cnn = instantiate_network(architecture).to(device)
     criterion = nn.MSELoss()
     optimizer = optim.Adam(cnn.parameters(), lr=learning_rate)
 
@@ -49,13 +63,18 @@ def train_model(color_dir, gray_dir=None, epochs=50, learning_rate=0.001, archit
         epoch_running_loss = 0
         for i, data in enumerate(train_data_loader, 0):
             gray, color = data
+
+            gray = gray.to(device)
+            color = color.to(device)
+            
             gray = gray.float()
             color = color.float()
 
-            outputs = cnn(gray)
-
             optimizer.zero_grad()
+
+            outputs = cnn(gray)
             loss = criterion(outputs, color)
+
             loss.backward()
             optimizer.step()
 
@@ -63,25 +82,35 @@ def train_model(color_dir, gray_dir=None, epochs=50, learning_rate=0.001, archit
             print(f'[{epoch + 1}, {i + 1:5d}] loss: {loss.item()/ 2000:.3f}')
         running_losses.append(epoch_running_loss)
         if epoch % 40 == 39:
-            save({
-                "epoch": epoch,
-                "model_state_dict": cnn.state_dict(),
-                "optimizer_state_dict": optimizer.state_dict(),
-                "time": time.time() - start + initial_time,
-                "running_losses": running_losses
-            }, f"./{file_name}_{learning_rate}_{epoch}.pt")
+            save(
+                {
+                    "epoch": epoch,
+                    "model_state_dict": cnn.state_dict(),
+                    "optimizer_state_dict": optimizer.state_dict(),
+                    "time": time.time() - start + initial_time,
+                    "running_losses": running_losses,
+                },
+                f"./{file_name}_{learning_rate}_{epoch}.pt",
+            )
     print("Finished")
 
     results = {"losses": running_losses}
 
     # Store losses in json file
-    with open(f"figures/training_{file_name}_{learning_rate}_losses.json", "w") as results_file:
+    with open(
+            f"./figures/training_{file_name}_{learning_rate}_losses.json",
+            "w",
+            encoding="utf-8",
+    ) as results_file:
         json.dump(results, results_file)
 
-    save({
-        "epoch": epoch,
-        "model_state_dict": cnn.state_dict(),
-        "optimizer_state_dict": optimizer.state_dict(),
-        "time": time.time() - start + initial_time,
-        "running_losses": running_losses
-    }, f"./{file_name}_{learning_rate}_full.pt")
+    save(
+        {
+            "epoch": epoch,
+            "model_state_dict": cnn.state_dict(),
+            "optimizer_state_dict": optimizer.state_dict(),
+            "time": time.time() - start + initial_time,
+            "running_losses": running_losses
+        },
+        f"./{file_name}_{learning_rate}_full.pt",
+    )
